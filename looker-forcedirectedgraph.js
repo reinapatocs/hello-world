@@ -44,8 +44,8 @@ function tick(e) {
     o.y += i & 1 ? k : -k;
     o.x += i & 2 ? k : -k;
   });
-  node.attr("cx", function(test2) { return test2.x; })
-      .attr("cy", function(test2) { return test2.y; })
+  node.attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; })
       
       ;
 }
@@ -60,24 +60,24 @@ function drawNodes(nodes) {
         .enter()
         .append("circle")
         .attr("class", "node")
-        .attr("id", function(test2, i) { return test2.name; })
-        .attr("cx", function(test2, i) { return test2.x; })
-        .attr("cy", function(test2, i) { return test2.y; })
-        .attr("r",  function(test2, i) { return 4; })
-        .style("fill",   function(test2, i) { return color(test2.group); })
-  			.on("mouseover", function(test2, i) { 
+        .attr("id", function(d, i) { return d.name; })
+        .attr("cx", function(d, i) { return d.x; })
+        .attr("cy", function(d, i) { return d.y; })
+        .attr("r",  function(d, i) { return 4; })
+        .style("fill",   function(d, i) { return color(d.group); })
+  			.on("mouseover", function(d, i) { 
           var element = d3.select(this)
           addTooltip(element)
     		})
-        .on("mouseout",  function(test2, i) { d3.select("#tooltip").remove(); });        
+        .on("mouseout",  function(d, i) { d3.select("#tooltip").remove(); });        
 }
 
 // Draws edges between nodes
 
 function drawLinks(links) {
     var scale = d3.scale.linear()
-        .domain(d3.extent(links, function(test2, i) {
-           return test2.value;
+        .domain(d3.extent(links, function(d, i) {
+           return d.value;
         }))
         .range([1, 6]);
     // https://github.com/mbostock/d3/wiki/Force-Layout#wiki-links
@@ -86,17 +86,17 @@ function drawLinks(links) {
         .enter()
         .append("line")
         .attr("class", "link")
-        .attr("x1", function(d) { return test2.source.x; })
-        .attr("y1", function(d) { return test2.source.y; })
-        .attr("x2", function(d) { return test2.target.x; })
-        .attr("y2", function(d) { return test2.target.y; })
-        .style("stroke-width", function(test2, i) {
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; })
+        .style("stroke-width", function(d, i) {
             return scale(d.value) + "px";
         })
-        .style("stroke-dasharray", function(test2, i) {
+        .style("stroke-dasharray", function(d, i) {
             return (d.value <= 1) ? "2, 2" : "none";
         })
-  			.style("stroke", function(test2, i) {
+  			.style("stroke", function(d, i) {
     				return "#ccc"
     		});
 }
@@ -106,17 +106,7 @@ const visObject = {
   * Configuration options for your visualization. In Looker, these show up in the vis editor
   * panel but here, you can just manually set your default values in the code.
   **/
-  options: {
-   first_option: {
-    	type: "string",
-      label: "My First Option",
-      default: "Default Value"
-    },
-    second_option: {
-    	type: "number",
-      label: "My Second Option",
-      default: 42
-    }},
+  options: {},
  
  /**
   * The create function gets called when the visualization is mounted but before any
@@ -148,29 +138,29 @@ const visObject = {
     var layout = d3.layout.force()
         .size([width - margin, height - margin])
         .charge(-120)
-        .linkDistance(function(test2, i) {
-            return (test2.source.group == test2.target.group) ? 50 : 100;
+        .linkDistance(function(d, i) {
+            return (d.source.group == d.target.group) ? 50 : 100;
         })
-        .nodes["test2.data.nodes"]
-        .links["test2.data.links"]
+        .nodes(data.nodes)
+        .links(data.links)
         .start();
-    drawLinks["test2.data.links"];
-    drawNodes["test2.data.nodes"];
+    drawLinks(data.links);
+    drawNodes(data.nodes);
     // add ability to drag and update layout
     // https://github.com/mbostock/d3/wiki/Force-Layout#wiki-drag
     d3.selectAll(".node").call(layout.drag);
     // https://github.com/mbostock/d3/wiki/Force-Layout#wiki-on
     layout.on("tick", function() {
         d3.selectAll(".link")
-            .attr("x1", function(test2) { return test2.source.x; })
-            .attr("y1", function(test2) { return test2.source.y; })
-            .attr("x2", function(test2) { return test2.target.x; })
-            .attr("y2", function(test2) { return test2.target.y; });
+            .attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
         d3.selectAll(".node")
-            .attr("cx", function(test2) { return test2.x; })
-            .attr("cy", function(test2) { return test2.y; });
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
     });
-
+data
 		doneRendering()
 	}
 };
