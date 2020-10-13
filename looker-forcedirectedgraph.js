@@ -139,13 +139,13 @@ const visObject = {
         .size([width - margin, height - margin])
         .charge(-120)
         .linkDistance(function(d, i) {
-            return (test2.source.group == test2.target.group) ? 50 : 100;
+            return (d.source.group == d.target.group) ? 50 : 100;
         })
-        .nodes(data.test2.nodes)
-        .links(data.test2.links)
+        .nodes(data.nodes)
+        .links(data.links)
         .start();
-    drawLinks(data.test2.links);
-    drawNodes(data.test2.nodes);
+    drawLinks(data.links);
+    drawNodes(data.nodes);
     // add ability to drag and update layout
     // https://github.com/mbostock/d3/wiki/Force-Layout#wiki-drag
     d3.selectAll(".node").call(layout.drag);
